@@ -1,0 +1,116 @@
+<!doctype html>
+<!-- _   ___________ ____  ___   ___   ____ ________
+    / | / /  _/ ___// __ \/   | |__ \ / __ <  / ___/
+   /  |/ // / \__ \/ /_/ / /| | __/ // / / / / __ \ 
+  / /|  // / ___/ / _, _/ ___ |/ __// /_/ / / /_/ / 
+ /_/ |_/___//____/_/ |_/_/  |_/____/\____/_/\____/ -->
+<html>
+
+<head>
+    <title>Socket.IO Chat</title>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="asset/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <div class="bg">
+        <img src="asset/background.jpg">
+    </div>
+    <div class="ui grid">
+        <div class="row">
+            <div class="sixteen wide column">
+                <div class="ui comments" id="msg_list" style="margin: 0 auto; margin-bottom: 50px; margin-top: 15px">
+                    <div class="ui segment">
+                        <div class='comment'>
+                            <a class='avatar'>
+                                <img src='asset/avatar/bigboss.jpg'>
+                            </a>
+                            <div class='content'>
+                                <a class='author'>版主</a>
+                                <div class='metadata'>
+                                    <span class='date'>系統訊息</span>
+                                </div>
+                                <div class='text'>
+                                    <p>歡迎進入即時匿名聊天室<br />你可以在左下方選擇不同的身份進行匿名留言</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui bottom fixed menu" style="margin-top: 60px">
+        <div class="ui grid">
+            <div class="row">
+                <div class="sixteen wide column">
+                    <div class="ui action input" style="width: 100vw">
+                        <select class="ui compact selection dropdown" id="user">
+                        <option selected="" value="guest">訪客</option>
+                        <option value="liver">月干</option>
+                        <option value="yee">YEE龍</option>
+                        <option value="edgeman">資工邊緣人</option>
+                        <option value="loser">魯蛇</option>
+                        <option value="fat">肥宅</option>
+                        <option value="hands">左右手</option>
+                        <option value="magic">魔法師</option>
+                        <option value="anonymous">匿名者</option>
+                        <option value="mei">小妹</option>
+                        <option value="beauty">正妹工程師</option>
+                        <option value="bird">菜鳥工程師</option>
+                        <option value="senpai">資深工程師</option>
+                        <option value="pm">PM</option>
+                        <option value="boss">慣老闆</option>
+                    </select>
+                        <input type="text" placeholder="留言..." id="msg">
+                        <div class="ui button" onclick="sendMessage()">Send</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
+    <link rel="stylesheet" href="asset/style.css">
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
+    <script>
+        $('.ui.dropdown').dropdown();
+
+        $("#msg").keypress(function(e) {
+            code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13)
+                sendMessage();
+        });
+
+        var socket = io();
+
+        function sendMessage() {
+            var d = new Date(),
+                date = d.toLocaleDateString(),
+                time = d.toLocaleTimeString(),
+                e = document.getElementById("user"),
+                user = e.options[e.selectedIndex].value,
+                message = $('#msg').val();
+            if (message) {
+                socket.emit('chat message', {
+                    date: date,
+                    time: time,
+                    user: user,
+                    msg: message
+                });
+            }
+            $('#msg').val('');
+        }
+
+        socket.on('chat message', function(data) {
+            $('#msg_list').append('<div class="ui segment">' + data);
+            $('html,body').scrollTop(1000000000);
+        });
+
+    </script>
+</body>
+
+</html>

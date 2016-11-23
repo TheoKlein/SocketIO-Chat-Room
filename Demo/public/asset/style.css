@@ -1,0 +1,21 @@
+body {
+    background-color: black;
+}
+
+.ui comments {
+    color: white;
+}
+
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -999;
+}
+
+.bg img {
+    min-height: 100%;
+    width: 100%;
+}
